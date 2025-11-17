@@ -3,8 +3,8 @@ import { z } from 'zod'
 import { webhooks } from '@/db/schema'
 import { db } from '@/db'
 import { inArray } from 'drizzle-orm'
-//import { generateText } from 'ai'
-//import { google } from '@ai-sdk/google';
+import { generateText } from 'ai'
+import { google } from '@ai-sdk/google';
 
 export const generateHandler: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -32,7 +32,7 @@ export const generateHandler: FastifyPluginAsyncZod = async (app) => {
         .where(inArray(webhooks.id, webhookIds))
 
       const webhooksBodies = result.map(webhook => webhook.body).join('\n\n')
-      /*
+      
       const { text } = await generateText({
         model: google('gemini-2.5-flash'),
         prompt: `
@@ -58,8 +58,8 @@ export const generateHandler: FastifyPluginAsyncZod = async (app) => {
           Return only the code and do not return \`\`\`typescript or any other markdown symbols, do not include any introduction or text before or after the code.
         `.trim(),
       });
-      */
-      return reply.status(201).send({ code: '' })
+      
+      return reply.status(201).send({ code: text })
     },
   )
 }
